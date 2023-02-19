@@ -1,0 +1,24 @@
+{
+  "name": "vsxc-ffmpeg",
+  "version": "0.1.0",
+  "description": "video,concat,speed,ffmpeg",
+  "main": "./src/index.js",
+  "bin": {
+    "vsxc-ffmpeg": "./bin/vsxc-ffmpeg.js"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "minimist": "^1.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^18.14.0",
+    "figlet": "^1.5.2"
+  }
+}
