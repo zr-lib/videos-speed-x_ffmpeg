@@ -29,6 +29,18 @@ ffmpeg version 5.1.2-full_build-www.gyan.dev Copyright (c) 2000-2022 the FFmpeg 
 
 ## 使用
 
+- `-h` 打印 `README.md`
+
+```bash
+vsxc-ffmpeg -h
+```
+
+- `--hzh` 打印 `README_zh-CN.md`
+
+```bash
+vsxc-ffmpeg --hzh
+```
+
 - `--mode=co`
 ```bash
 vsxc-ffmpeg --mode=co --dirs=2023-02-12
@@ -41,7 +53,7 @@ vsxc-ffmpeg --mode=sp --file=2023-02-12.mp4 --sp=2
 
 - `--mode=spc`
 ```bash
-vsxc-ffmpeg --mode=spc --dirs=2023-02-12 -sp=8
+vsxc-ffmpeg --mode=spc --dirs=2023-02-12 --sp=8
 ```
 
 ### 参数

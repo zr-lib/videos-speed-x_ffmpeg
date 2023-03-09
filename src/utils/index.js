@@ -2,6 +2,8 @@ const minimist = require('minimist');
 
 /**
  * @typedef Argvs 命令行参数格式化
+ * @property {} h; 帮助-英文
+ * @property {} hzh; 帮助-中文
  * @property {'spc' | 'sp' | 'co'} mode;
  * @property {number} sp 倍速 `mode=sp`时必传
  * @property {string} file 一个倍速文件，`mode=sp`时必传，
@@ -24,6 +26,15 @@ exports.getArgv = function getArgv() {
   return { ...argv, sp, dirs, fext, fflog };
 };
 
+/** 打印README.md */
+exports.help = function help({ hzh }) {
+  const READMEmd = hzh ? 'README_zh-CN.md' : 'README.md';
+  const readme = fs.readFileSync(path.resolve(__dirname, `../../${READMEmd}`), {
+    encoding: 'utf-8',
+  });
+  console.log(readme);
+};
+
 /**
  * 打印并退出进程
  * @param {string} message
@@ -41,6 +52,7 @@ exports.getTime = function getTime() {
 };
 
 const fs = require('fs');
+const path = require('path');
 /**
  * 获取文件夹下文件列表
  * @param {import("fs").PathLike} targetPath

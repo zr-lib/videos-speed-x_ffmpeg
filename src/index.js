@@ -1,9 +1,13 @@
-const { getArgv, panic } = require('./utils/index.js');
+const { getArgv, panic, help } = require('./utils/index.js');
 const mainTask = require('./main-task.js');
 const handleSpeed = require('./handle/speed.js');
 
 (function () {
-  const { mode, sp, an, file, dirs } = getArgv();
+  const { h, hzh, mode, sp, an, file, dirs } = getArgv();
+  if (h || hzh) {
+    help({ hzh });
+    process.exit(1);
+  }
   if (!mode) panic('--mode参数不存在!');
   if (!['spc', 'sp', 'co'].includes(mode)) {
     panic(`--mode参数不正确，可选值：${['spc', 'sp', 'co']}`);
