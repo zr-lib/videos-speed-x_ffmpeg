@@ -13,8 +13,8 @@ process.on('message', (data) => workerTask(data));
  * @param {{dirName: string, dirPath: string, speed: number}} param0
  */
 function workerTask({ dirName, dirPath, speed }) {
-  const { fext } = getArgv();
-  const newDirName = `${dirName}__${speed}x`;
+  const { fext, mode } = getArgv();
+  const newDirName = mode === 'co' ? dirName : `${dirName}__${speed}x`;
   const newDirPath = path.resolve(cwd, newDirName);
 
   if (speed !== 1 && existsSync(newDirPath)) {
@@ -22,15 +22,16 @@ function workerTask({ dirName, dirPath, speed }) {
   }
 
   console.log(dirPath);
-  getDirFiles(dirPath).then((data) => {
+  getDirFiles(dirPath).then(async (data) => {
     console.log(data);
     if (speed !== 1) {
       // 先倍数再合并
-      data.forEach((fileName, index) => {
+      for (let i = 0; i < data.length; i++) {
+        const fileName = data[i];
         if (!statSync(path.resolve(dirPath, fileName)).isFile) return;
-        handleSpeed({ fileName, dirName, speed });
-        console.log(`${index + 1}/${data.length}`);
-      });
+        await handleSpeed({ fileName, dirName, speed });
+        console.log(`${i + 1}/${data.length}`);
+      }
     }
 
     const concatFilePath = `${newDirPath}.${fext}`;
@@ -38,13 +39,13 @@ function workerTask({ dirName, dirPath, speed }) {
 
     // ffmpeg多文件合并参数格式
     const txtData = data.map((i) => `file ${newDirName}/${i}`).join('\n');
-    const textFile = path.resolve(cwd, `${newDirPath}.txt`);
+    const textFile = path.resolve(cwd, `${newDirName}.txt`);
     writeFile(textFile, txtData, { encoding: 'utf-8' }, (e) => {
       if (e) throw e;
       // console.log('生成成功: ', textFile);
-      handleConcat(newDirPath)
+      handleConcat(newDirPath, newDirName)
         .then(() => {
-          console.log(`${dirPath}压缩并合并完成，\n请手动删除[${dirPath}__${speed}x]文件夹`);
+          console.log(`${dirPath}压缩并合并完成，\n请手动删除[${newDirName}]文件夹`);
           process.exit();
         })
         .catch((err) => panic(err));

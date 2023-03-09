@@ -1,31 +1,39 @@
-const { spawn } = require('child_process');
+const { createFFmpeg, fetchFile } = require('@ffmpeg/ffmpeg');
+const { writeFile } = require('fs/promises');
+const path = require('path');
 const { getTime, getArgv } = require('../utils/index.js');
+
+const cwd = process.cwd();
+const { fext: _fext, fflog } = getArgv();
+// TODO: 只有一个cpu在跑
+const ffmpeg = createFFmpeg({ log: !!fflog });
 
 /**
  * 合并
- * @param {string} dirPath 将作为新的文件名
+ * @param {string} dirPath 输出路径
+ * @param {string} dirName 将作为新的文件名
  * @return {Promise}
  */
-module.exports = function handleConcat(dirPath) {
-  const { fext: _fext, fflog } = getArgv();
+module.exports = async function handleConcat(dirPath, dirName) {
   const fext = _fext || 'mp4';
-  const [copyCmd, ...copyArgs] =
-    `ffmpeg -f concat -i ${dirPath}.txt -c copy ${dirPath}.${fext}`.split(' ');
+  const txtFile = `${dirName}.txt`;
+  const outputFile = `${dirName}.${fext}`;
+  const [_, ...copyArgs] = `ffmpeg -i ${txtFile} -f concat -c copy ${outputFile}`.split(' ');
 
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     console.log(`\n开始合并文件夹: ${dirPath}`);
-    const copy = spawn(copyCmd, copyArgs, { stdio: fflog ? 'inherit' : 'ignore' });
     console.log(`[${getTime()}]#####[START]\n==> ${dirPath}.${fext}`);
-
-    copy.on('error', (e) => console.log(e));
-    copy.on('close', (code) => {
-      if (code !== 0) {
-        reject(code);
-        console.log('生成失败, code:', code);
-      } else {
-        console.log(`[${getTime()}]#####[DONE]\n`);
-        resolve();
-      }
-    });
+    try {
+      if (!ffmpeg.isLoaded()) await ffmpeg.load();
+      ffmpeg.FS('writeFile', txtFile, await fetchFile(path.resolve(cwd, txtFile)));
+      await ffmpeg.run.apply(ffmpeg, copyArgs);
+      // TODO: error
+      await writeFile(`${dirPath}.${fext}`, ffmpeg.FS('readFile', outputFile));
+      console.log(`\n[${getTime()}]#####[DONE]\n`);
+      resolve();
+    } catch (err) {
+      console.log('生成失败:', err);
+      reject(err);
+    }
   });
 };

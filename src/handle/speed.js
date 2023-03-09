@@ -1,22 +1,29 @@
 const path = require('path');
-const { spawnSync } = require('child_process');
 const { getTime, getArgv, panic } = require('../utils/index.js');
 const { existsSync, mkdirSync } = require('fs');
+const { createFFmpeg, fetchFile } = require('@ffmpeg/ffmpeg');
+const { writeFile } = require('fs/promises');
+
+const { mode, fflog, an } = getArgv();
+// TODO: 只有一个cpu在跑
+const ffmpeg = createFFmpeg({
+  log: !!fflog,
+  progress: ({ ratio }) => !fflog && process.stdout.write(`\r${(ratio * 100).toFixed(2)}%`),
+});
 
 /**
  * 倍速
  * @param {{fileName: string; dirName: string; speed: number}} param0
  * @returns
  */
-module.exports = function handleSpeed({ fileName, dirName, speed }) {
+module.exports = async function handleSpeed({ fileName, dirName, speed }) {
   // TODO: 文件名多个.处理
   const [fname, fext] = fileName.split('.');
   if (!fext) panic('file: ', fileName, '没有文件扩展名!');
 
   const cwd = process.cwd();
-  const { mode, fflog, an } = getArgv();
   const isModeSP = mode === 'sp';
-  const newFileName = isModeSP ? `${fname}__${speed}x.${fext}` : fileName;
+  const newFileName = `${fname}__${speed}x.${fext}`;
   const filePath = isModeSP ? path.resolve(cwd, fileName) : path.resolve(cwd, dirName, fileName);
   const dirPath = path.resolve(cwd, dirName);
   const newDirPath = isModeSP ? dirPath : path.resolve(cwd, `${dirName}__${speed}x`);
@@ -34,11 +41,16 @@ module.exports = function handleSpeed({ fileName, dirName, speed }) {
   const filter_complex = `-filter_complex [0:v]${videoParam}[v];${audioParam} -map [v] -map [a]`;
   // an去音频
   const param = an ? `-an -filter:v ${videoParam}` : filter_complex;
-  const [cmd, ...args] = `ffmpeg -i ${filePath} ${param} ${newDirPath}/${newFileName}`.split(' ');
+  const [_, ...args] = `ffmpeg -i ${fileName} ${param} ${newFileName}`.split(' ');
   console.log(`\n[${getTime()}]#####[START]\n==> ${newDirPath}/${newFileName}`);
 
-  const sp = spawnSync(cmd, args, { stdio: fflog ? 'inherit' : 'ignore' });
-  if (sp.error) throw sp.error;
-  if (sp.stderr) console.log(sp.stderr.toString());
-  if (!sp.error) console.log(`[${getTime()}]#####[DONE]`);
+  try {
+    if (!ffmpeg.isLoaded()) await ffmpeg.load();
+    ffmpeg.FS('writeFile', fileName, await fetchFile(filePath));
+    await ffmpeg.run.apply(ffmpeg, args);
+    await writeFile(`${newDirPath}/${newFileName}`, ffmpeg.FS('readFile', newFileName));
+    console.log(`\n[${getTime()}]#####[DONE]`);
+  } catch (err) {
+    console.log(err);
+  }
 };
