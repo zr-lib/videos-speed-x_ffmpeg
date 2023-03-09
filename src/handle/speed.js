@@ -18,7 +18,7 @@ module.exports = function handleSpeed({ fileName, dirName, speed }) {
   const isModeSP = mode === 'sp';
   const newFileName = isModeSP ? `${fname}__${speed}x.${fext}` : fileName;
   const filePath = isModeSP ? path.resolve(cwd, fileName) : path.resolve(cwd, dirName, fileName);
-  const dirPath = path.resolve(cwd, dirName);
+  const dirPath = isModeSP ? cwd : path.resolve(cwd, dirName);
   const newDirPath = isModeSP ? dirPath : path.resolve(cwd, `${dirName}__${speed}x`);
 
   if (!existsSync(filePath)) panic(`${filePath} 不存在`);
