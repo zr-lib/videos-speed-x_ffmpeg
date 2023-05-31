@@ -18,7 +18,7 @@ const minimist = require('minimist');
  * @returns {Argvs}
  */
 exports.getArgv = function getArgv() {
-  const argv = minimist(process.argv.slice(2));
+  const argv = minimist(process.argv.slice(2), { string: ['dirs'] });
   const sp = argv.sp ? argv.sp - 0 : 1;
   const dirs = (argv.dirs || '').split(',');
   const fflog = !!argv.fflog;
@@ -30,7 +30,7 @@ exports.getArgv = function getArgv() {
 exports.help = function help({ hzh }) {
   const READMEmd = hzh ? 'README_zh-CN.md' : 'README.md';
   const readme = fs.readFileSync(path.resolve(__dirname, `../../${READMEmd}`), {
-    encoding: 'utf-8',
+    encoding: 'utf-8'
   });
   console.log(readme);
 };
