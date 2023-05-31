@@ -1,8 +1,13 @@
 {
   "name": "vsxc-ffmpeg",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "video,concat,speed,ffmpeg",
-  "keywords": ["video", "concat","speed", "ffmpeg"],
+  "keywords": [
+    "video",
+    "concat",
+    "speed",
+    "ffmpeg"
+  ],
   "repository": "https://github.com/zr-lib/videos-speed-x_ffmpeg.git",
   "main": "./src/index.js",
   "bin": {
@@ -17,10 +22,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "figlet": "^1.6.0",
     "minimist": "^1.2.8"
   },
   "devDependencies": {
-    "@types/node": "^18.14.0",
-    "figlet": "^1.5.2"
+    "@types/node": "^18.14.0"
   }
 }
