@@ -4,3 +4,8 @@
 
 - fix: `--dirs={number}`
 - fix: `figlet` dependencies error
+
+## v0.1.4
+
+- fix: `--mode=co`
+- feat: `--mode=mr`

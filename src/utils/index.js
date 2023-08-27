@@ -1,10 +1,12 @@
 const minimist = require('minimist');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * @typedef Argvs 命令行参数格式化
  * @property {} h; 帮助-英文
  * @property {} hzh; 帮助-中文
- * @property {'spc' | 'sp' | 'co'} mode;
+ * @property {'spc' | 'sp' | 'co' | 'mr'} mode;
  * @property {number} sp 倍速 `mode=sp`时必传
  * @property {string} file 一个倍速文件，`mode=sp`时必传，
  * @property {string[]} dirs 合并的文件目录，`mode=co`/`mode=spc`时必传
@@ -51,8 +53,6 @@ exports.getTime = function getTime() {
   return new Date().toLocaleString();
 };
 
-const fs = require('fs');
-const path = require('path');
 /**
  * 获取文件夹下文件列表
  * @param {import("fs").PathLike} targetPath

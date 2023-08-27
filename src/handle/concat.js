@@ -9,8 +9,9 @@ const { getTime, getArgv } = require('../utils/index.js');
 module.exports = function handleConcat(dirPath) {
   const { fext: _fext, fflog } = getArgv();
   const fext = _fext || 'mp4';
-  const [copyCmd, ...copyArgs] =
-    `ffmpeg -f concat -i ${dirPath}.txt -c copy ${dirPath}.${fext}`.split(' ');
+  const cmdStr = `ffmpeg -f concat -safe 0 -i ${dirPath}.txt -c copy ${dirPath}.${fext}`;
+  const [copyCmd, ...copyArgs] = cmdStr.split(' ');
+  console.log(cmdStr);
 
   return new Promise((resolve, reject) => {
     console.log(`\n开始合并文件夹: ${dirPath}`);

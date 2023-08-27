@@ -5,6 +5,7 @@ English|[中文](./README_zh-CN.md)
 Multi-video processing tool based on 'ffmpeg'
 
 - concat only
+- merge `video`+`audio`
 - speed only
 - speed+concat(speed first, and then concat)
 - Multi-folder and multi-process processing
@@ -41,17 +42,28 @@ vsxc-ffmpeg -h
 vsxc-ffmpeg --hzh
 ```
 
+- `--mode=mr`
+
+merge `video`+`audio`
+
+```bash
+vsxc-ffmpeg --mode=mr --dirs=2023-02-12
+```
+
 - `--mode=co`
+
 ```bash
 vsxc-ffmpeg --mode=co --dirs=2023-02-12
 ```
 
 - `--mode=sp`
+
 ```bash
 vsxc-ffmpeg --mode=sp --file=2023-02-12.mp4 --sp=2
 ```
 
 - `--mode=spc`
+
 ```bash
 vsxc-ffmpeg --mode=spc --dirs=2023-02-12 --sp=8
 ```
@@ -62,6 +74,7 @@ vsxc-ffmpeg --mode=spc --dirs=2023-02-12 --sp=8
 
 - `sp`: speed only
 - `co`: concat only
+- `mr`: merge video+audio
 - `spc`: speed and concat
 
 #### others

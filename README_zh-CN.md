@@ -5,6 +5,7 @@
 基于`ffmpeg`多视频处理工具
 
 - 仅合并
+- 合并视频+音频
 - 仅倍速
 - 同时倍速+合并（先倍数后合并）
 - 多文件夹处理
@@ -42,16 +43,27 @@ vsxc-ffmpeg --hzh
 ```
 
 - `--mode=co`
+
 ```bash
 vsxc-ffmpeg --mode=co --dirs=2023-02-12
 ```
 
+- `--mode=mr`
+
+合并 `视频`+`音频`
+
+```bash
+vsxc-ffmpeg --mode=mr --dirs=2023-02-12
+```
+
 - `--mode=sp`
+
 ```bash
 vsxc-ffmpeg --mode=sp --file=2023-02-12.mp4 --sp=2
 ```
 
 - `--mode=spc`
+
 ```bash
 vsxc-ffmpeg --mode=spc --dirs=2023-02-12 --sp=8
 ```
@@ -62,6 +74,7 @@ vsxc-ffmpeg --mode=spc --dirs=2023-02-12 --sp=8
 
 - `sp`: 仅倍速
 - `co`: 仅合并
+- `mr`: 合并视频+音频
 - `spc`: 倍速+合并
 
 #### 其他参数

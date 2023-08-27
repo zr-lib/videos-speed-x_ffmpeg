@@ -9,11 +9,11 @@ const handleSpeed = require('./handle/speed.js');
     process.exit(1);
   }
   if (!mode) panic('--mode参数不存在!');
-  if (!['spc', 'sp', 'co'].includes(mode)) {
+  if (!['spc', 'sp', 'co', 'mr'].includes(mode)) {
     panic(`--mode参数不正确，可选值：${['spc', 'sp', 'co']}`);
   }
   // 仅合并
-  if (mode === 'co') {
+  if (mode === 'co' || mode === 'mr') {
     if (!dirs.length) panic('--dirs参数不存在!');
     mainTask(dirs, 1);
   }
